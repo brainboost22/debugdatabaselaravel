@@ -1,0 +1,14 @@
+public function debugDatabaseQueries($terminal = true)
+{
+    if (env('DATABASE_QUERIES_DEBUG', true)) {
+        \DB::listen(function ($query, $bindings, $time, $connection) use($terminal) {
+            $fullQuery = vsprintf(str_replace(array('%', '?'), array('%%', '%s'), $query), $bindings);
+
+            $text = $connection . ' (' . $time . '): ' . $fullQuery;
+
+            if($terminal) dump($text);
+
+            \Log::info($text);
+        });
+    }
+}
